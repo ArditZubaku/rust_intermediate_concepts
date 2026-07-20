@@ -1,3 +1,8 @@
+use std::{
+    fs::File,
+    io::{self, IsTerminal},
+};
+
 // use std::{
 //     error::Error,
 //     fmt::{Display, Formatter},
@@ -35,4 +40,32 @@ fn main() {
     //
     // // That's all it's needed
     // impl Error for PuzzleError {}
+
+    let my_result: Result<i32, String> = Err("Something went wrong".to_string());
+
+    if let Err(e) = my_result {
+        println!("Warning: {}", e)
+    }
+
+    fn get_saved_score() -> Result<i8, String> {
+        Err("Something went wrong".to_string())
+    }
+
+    #[allow(clippy::manual_unwrap_or)]
+    // Both cases should return the same type
+    let score = match get_saved_score() {
+        Ok(n) => n,
+        Err(_) => -1,
+    };
+    println!("Score {}", score);
+
+    fn poem() -> Result<bool, io::Error> {
+        // The `?` operator basically means assign the success value to file or
+        // return the error for the whole function
+        let file = File::open("/tmp/bwlint.log")?;
+
+        println!("{}", file.is_terminal());
+
+        Ok(file.is_terminal())
+    }
 }
