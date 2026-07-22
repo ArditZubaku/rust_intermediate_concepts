@@ -1,0 +1,14 @@
+[package]
+name = "benchmarking"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[dev-dependencies]
+criterion = { version = "0.8.2", features = ["html_reports"] }
+unit_tests = { path = "../unit_tests" }
+
+[[bench]]
+name = "snuggle_speed"
+harness = false
