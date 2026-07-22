@@ -1,0 +1,7 @@
+[package]
+name = "integration_tests"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+unit_tests = { path = "../unit_tests" }

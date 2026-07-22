@@ -2,16 +2,12 @@ fn main() {
     println!("Hello, world!");
 }
 
-pub fn snuggle(bunnies: u128) -> u128 {
-    bunnies * 8
-}
-
 // NOTE: This basically the compiler to compile this module only when we are running tests
 #[cfg(test)]
 mod test {
     use std::num::ParseIntError;
 
-    use super::*;
+    use unit_tests::*;
 
     #[test]
     fn snuggling_bunnies_multiple() {
