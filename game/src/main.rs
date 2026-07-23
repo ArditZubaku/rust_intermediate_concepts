@@ -2,32 +2,26 @@ use core::f32;
 
 use rusty_engine::prelude::*;
 
-#[derive(Debug, Resource)]
+#[derive(Debug, Default, Resource)]
 struct GameState {
-    high_score: u32,
+    // high_score: u32,
     current_score: u32,
-    enemy_labels: Vec<String>,
-    spawn_timer: Timer,
-}
-
-struct Labels {
-    player: String,
-    car1: String,
+    ferris_index: i32,
+    // spawn_timer: Timer,
 }
 
 const PLAYER_LABEL: &str = "player";
-const CAR1_LABEL: &str = "car1";
 
-impl Default for GameState {
-    fn default() -> Self {
-        Self {
-            high_score: 0,
-            current_score: 0,
-            enemy_labels: Vec::new(),
-            spawn_timer: Timer::from_seconds(1.0, TimerMode::Once),
-        }
-    }
-}
+// impl Default for GameState {
+//     fn default() -> Self {
+//         Self {
+//             // high_score: 0,
+//             current_score: 0,
+//             ferris_index: 0,
+//             // spawn_timer: Timer::from_seconds(1.0, TimerMode::Once),
+//         }
+//     }
+// }
 
 fn main() {
     let mut game = Game::new();
@@ -44,10 +38,6 @@ fn main() {
     // let temporary = game.add_sprite("temporary", SpritePreset::RacingCarRed);
     // temporary.translation = Vec2::new(30.0, 0.0);
     // temporary.layer = 999.0; // the highest layer possible to be set
-
-    let car1 = game.add_sprite(CAR1_LABEL, SpritePreset::RacingCarYellow);
-    car1.translation = Vec2::new(300.0, 0.0);
-    car1.collision = true;
 
     game.add_logic(game_logic);
 
@@ -102,5 +92,16 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
         .pressed_any(&[KeyCode::ArrowLeft, KeyCode::KeyA])
     {
         player.translation.x -= MOVEMENT_SPEED * engine.delta_f32;
+    }
+
+    // handle mouse input
+    if engine.mouse_state.just_pressed(MouseButton::Left)
+        && let Some(mouse_location) = engine.mouse_state.location()
+    {
+        let label = format!("ferris{}", game_state.ferris_index);
+        game_state.ferris_index += 1;
+        let ferris = engine.add_sprite(label.clone(), SpritePreset::RacingCarYellow);
+        ferris.translation = mouse_location;
+        ferris.collision = true;
     }
 }
