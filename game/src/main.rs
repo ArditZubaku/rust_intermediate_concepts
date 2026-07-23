@@ -1,8 +1,6 @@
-use std::ptr::null;
-
 use rusty_engine::prelude::*;
 
-#[derive(Resource)]
+#[derive(Debug, Resource)]
 struct GameState {
     high_score: u32,
     current_score: u32,
@@ -25,7 +23,14 @@ fn main() {
     let mut game = Game::new();
 
     // setup game here
+    game.add_logic(game_logic);
 
     let init_state = GameState::default();
     game.run(init_state);
+}
+
+fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
+    game_state.current_score += 1;
+    println!("Current score: {}", game_state.current_score);
+    println!("Game state {:?}", game_state);
 }
