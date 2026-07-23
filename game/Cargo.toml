@@ -1,0 +1,16 @@
+[package]
+name = "game"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rusty_engine = "7.0.0"
+
+# Tells the dev profile to be the same as the release profile (which gives us the best performance)
+[profile.dev]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+incremental = false
+codegen-units = 16
