@@ -45,6 +45,20 @@ fn main() {
 }
 
 fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
+    // quit if Q is pressed
+    if engine.keyboard_state.just_pressed(KeyCode::KeyQ) {
+        engine.should_exit = true;
+    }
+
+    // keep text near the edges of the screen
+    let offset = ((engine.time_since_startup_f64 * 5.0).cos() * 5.0) as f32;
+    let score = engine.texts.get_mut(SCORE_LABEL).unwrap();
+    score.translation.x = engine.window_dimensions.x / 2.0 - 80.0;
+    score.translation.y = engine.window_dimensions.y / 2.0 - 30.0 + offset;
+    let high_score = engine.texts.get_mut(HIGH_SCORE_LABEL).unwrap();
+    high_score.translation.x = -engine.window_dimensions.x / 2.0 + 110.0;
+    high_score.translation.y = engine.window_dimensions.y / 2.0 - 30.0;
+
     // handle collision
     for event in engine.collision_events.drain(..) {
         // println!("{:?}", event);
