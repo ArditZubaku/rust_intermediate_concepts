@@ -4,24 +4,15 @@ use rusty_engine::prelude::*;
 
 #[derive(Debug, Default, Resource)]
 struct GameState {
-    // high_score: u32,
-    current_score: u32,
+    high_score: u32,
+    score: u32,
     ferris_index: i32,
     // spawn_timer: Timer,
 }
 
 const PLAYER_LABEL: &str = "player";
-
-// impl Default for GameState {
-//     fn default() -> Self {
-//         Self {
-//             // high_score: 0,
-//             current_score: 0,
-//             ferris_index: 0,
-//             // spawn_timer: Timer::from_seconds(1.0, TimerMode::Once),
-//         }
-//     }
-// }
+const SCORE_LABEL: &str = "score";
+const HIGH_SCORE_LABEL: &str = "high_score";
 
 fn main() {
     let mut game = Game::new();
@@ -38,6 +29,12 @@ fn main() {
     // let temporary = game.add_sprite("temporary", SpritePreset::RacingCarRed);
     // temporary.translation = Vec2::new(30.0, 0.0);
     // temporary.layer = 999.0; // the highest layer possible to be set
+
+    let score = game.add_text(SCORE_LABEL, "Score: 0");
+    score.translation = Vec2::new(520.0, 320.0);
+
+    let high_score = game.add_text(HIGH_SCORE_LABEL, "High Score: 0");
+    high_score.translation = Vec2::new(-520.0, 320.0);
 
     game.add_logic(game_logic);
 
@@ -57,8 +54,16 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
                 }
             }
 
-            game_state.current_score += 1;
-            println!("Game state {:?}", game_state);
+            game_state.score += 1;
+
+            let score = engine.texts.get_mut(SCORE_LABEL).unwrap();
+            score.value = format!("Score: {}", game_state.score);
+
+            if game_state.score > game_state.high_score {
+                game_state.high_score = game_state.score;
+                let high_score = engine.texts.get_mut(HIGH_SCORE_LABEL).unwrap();
+                high_score.value = format!("High Score: {}", game_state.high_score);
+            }
         }
     }
 
@@ -103,5 +108,12 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
         let ferris = engine.add_sprite(label.clone(), SpritePreset::RacingCarYellow);
         ferris.translation = mouse_location;
         ferris.collision = true;
+    }
+
+    // reset score
+    if engine.keyboard_state.just_pressed(KeyCode::KeyR) {
+        game_state.score = 0;
+        let score = engine.texts.get_mut(SCORE_LABEL).unwrap();
+        score.value = String::from("Score: 0");
     }
 }
