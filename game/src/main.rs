@@ -17,6 +17,14 @@ const HIGH_SCORE_LABEL: &str = "high_score";
 fn main() {
     let mut game = Game::new();
 
+    game.window_settings(Window {
+        resolution: WindowResolution::new(800, 200),
+        title: "Tutorial".into(),
+        resizable: false,
+        decorations: false,
+        ..Default::default()
+    });
+
     game.audio_manager.play_music(MusicPreset::Classy8Bit, 0.3);
 
     let player = game.add_sprite(PLAYER_LABEL, SpritePreset::RacingCarBlue);
