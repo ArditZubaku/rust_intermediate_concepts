@@ -1,3 +1,5 @@
+use core::f32;
+
 use rusty_engine::prelude::*;
 
 #[derive(Debug, Resource)]
@@ -54,7 +56,7 @@ fn main() {
 }
 
 fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
-    // engine.show_colliders = true;
+    // handle collision
     for event in engine.collision_events.drain(..) {
         // println!("{:?}", event);
         if event.state == CollisionState::Begin && event.pair.one_starts_with(PLAYER_LABEL) {
@@ -70,6 +72,35 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
         }
     }
 
+    // handle movement
     let player = engine.sprites.get_mut(PLAYER_LABEL).unwrap();
-    player.translation.x += 100.0 * engine.delta_f32;
+
+    const MOVEMENT_SPEED: f32 = 100.0;
+    if engine
+        .keyboard_state
+        .pressed_any(&[KeyCode::ArrowUp, KeyCode::KeyW])
+    {
+        player.translation.y += MOVEMENT_SPEED * engine.delta_f32;
+    }
+
+    if engine
+        .keyboard_state
+        .pressed_any(&[KeyCode::ArrowDown, KeyCode::KeyS])
+    {
+        player.translation.y -= MOVEMENT_SPEED * engine.delta_f32;
+    }
+
+    if engine
+        .keyboard_state
+        .pressed_any(&[KeyCode::ArrowRight, KeyCode::KeyD])
+    {
+        player.translation.x += MOVEMENT_SPEED * engine.delta_f32;
+    }
+
+    if engine
+        .keyboard_state
+        .pressed_any(&[KeyCode::ArrowLeft, KeyCode::KeyA])
+    {
+        player.translation.x -= MOVEMENT_SPEED * engine.delta_f32;
+    }
 }
