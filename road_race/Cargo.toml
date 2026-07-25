@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 rusty_engine = "7.0.0"
+rand = "0.10.2"
 
 [profile.dev]
 opt-level = 3
