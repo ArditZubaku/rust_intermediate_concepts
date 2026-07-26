@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use rand::{RngExt, seq::IteratorRandom};
 use rusty_engine::prelude::*;
 
@@ -46,6 +48,9 @@ fn main() {
 }
 
 fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
+    const MARBLE_SPEED: f32 = 600.0;
+    const CAR_SPEED: f32 = 250.0;
+
     let player = engine.sprites.get_mut("player").unwrap();
 
     if let Some(location) = engine.mouse_state.location() {
@@ -64,15 +69,13 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
         engine.audio_manager.play_sfx(SfxPreset::Impact2, 0.4);
     }
 
-    const MARBLE_SPEED: f32 = 600.0;
-    for (label, sprite) in engine.sprites.iter_mut() {
+    for (label, sprite) in &mut engine.sprites {
         if label.starts_with("marble") {
             sprite.translation.y += MARBLE_SPEED * engine.delta_f32;
         }
     }
 
-    const CAR_SPEED: f32 = 250.0;
-    for (label, sprite) in engine.sprites.iter_mut() {
+    for (label, sprite) in &mut engine.sprites {
         if label.starts_with("car") {
             sprite.translation.x += CAR_SPEED * engine.delta_f32;
         }
@@ -114,13 +117,12 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
             text.value = format!("Cars left: {}", game_state.cars_left);
 
             let label = format!("car{}", game_state.cars_left);
-            use SpritePreset::*;
             let car_choices = [
-                RacingCarBlack,
-                RacingCarBlue,
-                RacingCarGreen,
-                RacingCarRed,
-                RacingCarYellow,
+                SpritePreset::RacingCarBlack,
+                SpritePreset::RacingCarBlue,
+                SpritePreset::RacingCarGreen,
+                SpritePreset::RacingCarRed,
+                SpritePreset::RacingCarYellow,
             ];
             #[rustfmt::skip]
             let car = engine.add_sprite(
